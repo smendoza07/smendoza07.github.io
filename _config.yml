@@ -1,7 +1,7 @@
 title: "Saul Mendoza"
 author: "Saul Mendoza"
 description: "Personal Projects"
-permalink: /:title/
+permalink: /Home/
 lang: "en"
 excerpt_separator: "\n\n\n"
 date_format: "%B %d, %Y"
