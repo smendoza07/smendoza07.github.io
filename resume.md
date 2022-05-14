@@ -3,4 +3,4 @@ title: "Resume"
 permalink: "/Resume/"
 layout: page
 ---
-<a href="smendoza07.github.io/SaulMendozaResume.pdf" target="_blank">PDF.</a>
+<embed src="https://smendoza07.github.io/SaulMendozaResume.pdf" width="100%" height="850px"/>
