@@ -1,1 +1,5 @@
-<h1>Heading level 1</h1>
+---
+title: "Resume"
+permalink: "/Resume/"
+layout: page
+---
