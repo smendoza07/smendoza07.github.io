@@ -20,7 +20,7 @@ navigation:                # accepts {file, title, url, icon, sidebaricon}
   - {file: "home.md", title: "Home"}
   - {file: "resume.md", title: "Resume"}
   - {title: "Projects"}
-  - {file: "README.md"}
+  # - {file: "README.md"}
 
 external:                  # shows a footer with social links - for available icons see fontawesome.com/icons
   - {title: Mail, icon: envelope, url: "mailto:smendoza07@users.noreply.github.com"}
