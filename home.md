@@ -1,7 +1,6 @@
 ---
-title: Home
-permalink: /Home/
-layout: page
+Title: "Home"
+layout: default
 ---
 
 ![Saul Mendoza](https://raw.githubusercontent.com/smendoza07/smendoza07.github.io/master/images/20211217_181952.jpg)
