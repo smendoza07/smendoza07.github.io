@@ -20,7 +20,6 @@ categories: media
 
 <h3>SonicSensorSM.ino<h3>
 {% highlight c++ %}
-
 #include <LiquidCrystal.h>
 #include <NewPing.h>
 #include <TimerOne.h>
@@ -236,7 +235,6 @@ void loop() {
   
 <h3>notes_Library.h<h3>
 {% highlight c++ %}
-  
 #ifndef NOTES_LIBRARY_H
 #define NOTES_LIBRARY_H
 
@@ -264,5 +262,4 @@ void buzz(int targetPin, long frequency, long length) {
 }
 
 #endif
-
 {% endhighlight %}
