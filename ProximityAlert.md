@@ -5,6 +5,7 @@ categories: media
 ---
 ## Project Description
 
+This project uses a sonic sensor to detect distances and display them on a 16x2 LCD screen. When a object is below a threshold, a message advising caution along with a speaker that beeps, will advise the user of danger. When objects are above the threshold, the speaker will shut off and a safe message will display.
   
 ## Demo Video
 {% include embed.html url="https://www.youtube.com/embed/U7kOJrKAeyM" %}
