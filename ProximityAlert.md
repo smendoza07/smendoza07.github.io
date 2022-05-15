@@ -1,7 +1,12 @@
-<h1> Proximity Alert Sensor <h1>
+---
+title: Proximity Alert Sensor
+layout: page
+---
 
   
-<h3>Code<h3>
+<h2>Code<h2>
+
+<h3>SonicSensorSM.ino<h3>
 {% highlight c++ %}
 
 #include <LiquidCrystal.h>
@@ -215,4 +220,37 @@ void loop() {
   Song_elapsedTime += timerPeriod;
   
 }
+{% endhighlight %}
+  
+<h3>notes_Library.h<h3>
+{% highlight c++ %}
+  
+#ifndef NOTES_LIBRARY_H
+#define NOTES_LIBRARY_H
+
+#include <Arduino.h>
+
+#define melodyPin 49
+
+
+void buzz(int targetPin, long frequency, long length) {
+  digitalWrite(13, HIGH);
+  long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
+  //// 1 second's worth of microseconds, divided by the frequency, then split in half since
+  //// there are two phases to each cycle
+  long numCycles = frequency * length / 1000; // calculate the number of cycles for proper timing
+  //// multiply frequency, which is really cycles per second, by the number of seconds to
+  //// get the total number of cycles to produce
+  for (long i = 0; i < numCycles; i++) { // for the calculated length of time...
+    digitalWrite(targetPin, HIGH); // write the buzzer pin high to push out the diaphram
+    delayMicroseconds(delayValue); // wait for the calculated delay value
+    digitalWrite(targetPin, LOW); // write the buzzer pin low to pull back the diaphram
+    delayMicroseconds(delayValue); // wait again or the calculated delay value
+  }
+  digitalWrite(9, LOW);
+
+}
+
+#endif
+
 {% endhighlight %}
