@@ -28,4 +28,4 @@ beep when distance is too small. <p>
 up an LED to show the door is unlocked. Resets if a wrong key is entered and re-locks upon “closing” door. 
 <p>
   
-  
+ [PROXIMITY](ProximityAlert.md)
