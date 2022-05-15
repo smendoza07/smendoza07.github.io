@@ -1,6 +1,7 @@
 ---
-title: Proximity Alert Sensor
+title: "Proximity Alert Sensor"
 layout: page
+categories: media
 ---
 ## Project Description
 
@@ -12,6 +13,7 @@ layout: page
 - Sonic Sensor
 - Passive Buzzer
 - 16 x 2 LCD Display
+- 10k ohm Potentiometer
 - Elegoo Arduino Mega 2560 R3
   
 ## Code
