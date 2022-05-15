@@ -2,7 +2,17 @@
 title: Proximity Alert Sensor
 layout: page
 ---
+<h2>Project Description<h2>
 
+  
+<h2>Demo Video<h2>  
+{% include embed.html url="https://youtube.com/shorts/U7kOJrKAeyM?feature=share" %}
+
+<h2>Parts Used<h2>
+- Sonic Sensor
+- Passive Buzzer
+- 16 x 2 LCD Display
+- Elegoo Arduino Mega 2560 R3
   
 <h2>Code<h2>
 
