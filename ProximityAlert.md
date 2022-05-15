@@ -7,7 +7,7 @@ categories: media
 
   
 ## Demo Video
-{% include embed.html url="https://www.youtube.com/shorts/U7kOJrKAeyM" %}
+{% include embed.html url="https://www.youtube.com/embed/U7kOJrKAeyM" %}
 
 ## Parts Used
 - Sonic Sensor
