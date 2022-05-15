@@ -6,7 +6,7 @@ layout: page
 
   
 ## Demo Video
-{% include embed.html url="https://youtube.com/shorts/U7kOJrKAeyM?feature=share" %}
+{% include embed.html url="https://www.youtube.com/shorts/U7kOJrKAeyM" %}
 
 ## Parts Used
 - Sonic Sensor
