@@ -6,7 +6,7 @@ layout: page
 <h1>PROJECTS</h1>
 
 
-<h3>[Proximity Alert Sensor](ProximityAlert.md)</h3>
+[Proximity Alert Sensor](ProximityAlert.md)
 
 <p>Uses a 16x2 LCD screen to display distance of object and message along with a speaker that
 will beep when distance is too small.<p>
