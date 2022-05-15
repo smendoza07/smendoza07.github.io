@@ -2,21 +2,21 @@
 title: Proximity Alert Sensor
 layout: page
 ---
-<h2>Project Description<h2>
+## Project Description
 
   
-<h2>Demo Video<h2>  
+## Demo Video
 {% include embed.html url="https://youtube.com/shorts/U7kOJrKAeyM?feature=share" %}
 
-<h2>Parts Used<h2>
+## Parts Used
 - Sonic Sensor
 - Passive Buzzer
 - 16 x 2 LCD Display
 - Elegoo Arduino Mega 2560 R3
   
-<h2>Code<h2>
+## Code
 
-<h3>SonicSensorSM.ino<h3>
+## SonicSensorSM.ino
 {% highlight c++ %}
 
 #include <LiquidCrystal.h>
@@ -232,7 +232,7 @@ void loop() {
 }
 {% endhighlight %}
   
-<h3>notes_Library.h<h3>
+## notes_Library.h
 {% highlight c++ %}
   
 #ifndef NOTES_LIBRARY_H
