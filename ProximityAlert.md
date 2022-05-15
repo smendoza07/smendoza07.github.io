@@ -18,7 +18,7 @@ categories: media
   
 ## Code
 
-## SonicSensorSM.ino
+<h3>SonicSensorSM.ino<h3>
 {% highlight c++ %}
 
 #include <LiquidCrystal.h>
@@ -234,7 +234,7 @@ void loop() {
 }
 {% endhighlight %}
   
-## notes_Library.h
+<h3>notes_Library.h<h3>
 {% highlight c++ %}
   
 #ifndef NOTES_LIBRARY_H
