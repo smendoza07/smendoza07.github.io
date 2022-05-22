@@ -11,21 +11,16 @@ This project uses a 5x8 LED array
 {% include embed.html url="https://youtube.com/embed/cyE-3rrtRfc" %}
 
 ## Parts Used
-- Sonic Sensor
-- Passive Buzzer
-- 16 x 2 LCD Display
-- 10k ohm Potentiometer
-- Elegoo Arduino Mega 2560 R3
+- 5x8 LED Array
+- Buttons (x3)
+- ATMega 1284
   
 ## Code
 
 <h3>PingPongMain.c<h3>
 {% highlight c++ %}
-/*	Author: Saul Mendoza
-*	  Exercise Description: Ping Pong game vs AI using lcd screen.
-*
-*	Demo Link: 
-*
+/* Author: Saul Mendoza
+*  Exercise Description: Ping Pong game vs AI using lcd screen. 
 */
   
 #include <avr/io.h>
