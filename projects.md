@@ -11,7 +11,7 @@ layout: page
 <p>Uses a 16x2 LCD screen to display distance of object and message along with a speaker that
 will beep when distance is too small.<p>
   
-[Proximity Alert Sensor](PingPong.md)
+[Ping Pong Game](PingPong.md)
 
 <p>Uses a LCD screen to display distance of object and message along with a speaker that will
 beep when distance is too small. <p>
