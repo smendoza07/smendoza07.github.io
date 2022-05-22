@@ -13,8 +13,7 @@ will beep when distance is too small.<p>
   
 [Ping Pong Game](PingPong.md)
 
-<p>Uses a LCD screen to display distance of object and message along with a speaker that will
-beep when distance is too small. <p>
+<p>Uses a LCD array to play a primitive version of Ping Pong. <p>
   
 <h3>Digital Door Lock System</h3>
 
