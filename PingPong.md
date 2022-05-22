@@ -5,10 +5,10 @@ categories: media
 ---
 ## Project Description
 
-This project uses a sonic sensor to detect distances and display them on a 16x2 LCD screen. When a object is below a threshold, a message advising caution along with a speaker that beeps, will advise the user of danger. When objects are above the threshold, the speaker will shut off and a safe message will display.
+This project uses a 5x8 LED array 
   
 ## Demo Video
-{% include embed.html url="https://www.youtube.com/embed/U7kOJrKAeyM" %}
+{% include embed.html url="https://youtube.com/embed/cyE-3rrtRfc" %}
 
 ## Parts Used
 - Sonic Sensor
@@ -19,248 +19,453 @@ This project uses a sonic sensor to detect distances and display them on a 16x2 
   
 ## Code
 
-<h3>SonicSensorSM.ino<h3>
+<h3>PingPongMain.c<h3>
 {% highlight c++ %}
-#include <LiquidCrystal.h>
-#include <NewPing.h>
-#include <TimerOne.h>
-#include "notes_Library.h"
+/*	Author: Saul Mendoza
+*	  Exercise Description: Ping Pong game vs AI using lcd screen.
+*
+*	Demo Link: 
+*
+*/
+  
+#include <avr/io.h>
+#include "timer.h"
+#include "scheduler.h"
+#include "bit.h"
+#ifdef _SIMULATE_
+#include "simAVRHeader.h"
+#endif
 
-#define TRIGGER_PIN  40  // Trig pin, sends out pulse
-#define ECHO_PIN     50  // Echo pin, recieves the signal back in
-#define MAX_DISTANCE 400 // Sensor distance is rated at 400-500cm. Set to max distance in cm.
+//-----------Gobal Declarations---------
+unsigned char Ball_Location[8] = { 0xFF, 0xFF, 0xFF, 0xFB, 0xFF, 0xFF, 0xFF, 0xFF };
+unsigned char P1_Rows[8] = { 0xF1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+unsigned char P2_Rows[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF1 };
+int current = 3;
+int Ball_Speed = 100;
+unsigned int start = 0;
+//-----------end Globals----------------
 
-LiquidCrystal lcd(44, 45, 30, 31, 32, 33);  // (RS, E, D4, D5, D6, D7)
-NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
+enum Start_States { Reset, Start, Reset_Hold, Start_Hold };
 
-enum Sonar_States { Sonar_Ping } Sonar_State;
-enum LCD_Dist_States { LCD_Distance } LCD_Dist_State;
-enum LCD_Message_States { LCD_MsgInit, LCD_Msg1, LCD_Msg2 } LCD_Msg_State;
-enum Song_States { Play_Song0, Play_Song1, Play_Song2 } Song_State;
+int StartSM (int state) {
+	switch (state) {
+		case Reset:
+			if ((~PINA & 0x10) == 0x10)
+				state = Start_Hold;
+			else if((~PINA & 0x10) == 0x00)
+				state = Reset;
+			break;
+		case Reset_Hold:
+			if ((~PINA & 0x10) == 0x10)
+				state = Reset_Hold;
+			else if((~PINA & 0x10) == 0x00)
+				state = Reset;
+			break;
+		case Start_Hold:
+			if ((~PINA & 0x10) == 0x10)
+				state = Start_Hold;
+			else if ((~PINA & 0x10) == 0x00)
+				state = Start;
+			break;
+		case Start:
+			if ((~PINA & 0x10) == 0x10)
+				state = Reset_Hold;
+			else if ((~PINA & 0x10) == 0x00)
+				state = Start;
+			break;
+		default:
+			state = Reset;
+			break;
+	}
 
-volatile unsigned char TimerFlag = 0;
-volatile unsigned long distance_cm = 0;
-unsigned long timerPeriod = 50000;
-unsigned long Sonar_elapsedTime = 50000;
-unsigned long Song_elapsedTime = 100000;
-
-void TimerISR(){
-  TimerFlag = 1;
+	switch (state) {
+		case Reset:
+			start = 0;
+			break;
+		case Reset_Hold:
+			break;
+		case Start_Hold:
+			break;
+		case Start:
+			start = 1;
+			break;
+		default:
+			break;
+	}
+	
+	return state;
 }
 
-void Sonar_SM () {
-  
-  switch ( Sonar_State ) {
-    case Sonar_Ping:
-      Sonar_State = Sonar_Ping;
-      break;
-    default:
-      break;
-  }
-  
-  switch ( Sonar_State ){
-    case Sonar_Ping:
-      distance_cm = sonar.ping_cm();
-      break;
-    default:
-      break;      
-  }
-  
+enum P1_States { P1_Init, P1_Wait, P1_MoveUp, P1_MoveDown };
+
+int P1_Movement (int state) {
+	static unsigned char paddle[3] = { 0xF8, 0xF1, 0xE3 };
+	static unsigned char i = 1;
+
+	switch (state) {
+		case P1_Init:
+			if(start == 1)
+				state = P1_Wait;
+			else if(start == 0)
+				state = P1_Init;
+			break;
+		case P1_Wait:
+			if(start == 0)
+				state = P1_Init;
+			else if(((~PINA & 0x01) == 0x01) && i>0 )
+				state = P1_MoveUp;
+			else if(((~PINA & 0x02) == 0x02) && i<2 )
+				state = P1_MoveDown;
+			else
+				P1_Wait;
+			break;
+		case P1_MoveUp:
+			if (start == 0)
+				state = P1_Init;
+			else
+				state = P1_Wait;
+			break;
+		case P1_MoveDown:
+			if (start == 0)
+				state = P1_Init;
+			else 
+				state = P1_Wait;
+			break;
+		default:
+			state = P1_Init;
+			break;
+	}
+
+	switch (state) {
+		case P1_Init:
+			P1_Rows[0] = 0xF1;
+			i = 1;
+			break;
+		case P1_Wait:
+			break;
+		case P1_MoveUp:
+			i--;
+			P1_Rows[0]  = paddle[i];
+			break;
+		case P1_MoveDown:
+			i++;
+			P1_Rows[0] = paddle[i];
+			break;
+	}
+
+
+
+	return state;
 }
 
-void Tick_LCD_Dist () {
-  
-  switch ( LCD_Dist_State ) {
-    case LCD_Distance:
-      LCD_Dist_State = LCD_Distance;
-      break;
-    default:
-      LCD_Dist_State = LCD_Distance;
-      break;
-  }
+enum P2_States { P2_Init, P2_Wait, P2_MoveUp, P2_MoveDown };
 
-  switch ( LCD_Dist_State ) {
-    case LCD_Distance:
-      lcd.setCursor(0, 0);              // places cursor at top left of lcd
-      lcd.print("Distance: ");
-      lcd.print(distance_cm * .01);   // Converts cm to m and prints out
-      lcd.print(" m");
-      break;
-    default:
-      break;
-  }
+int P2_Movement (int state) {
+	static unsigned char paddle[3] = { 0xF8, 0xF1, 0xE3 };
+	static unsigned char i = 1;
+
+	switch (state) {
+		case P2_Init:
+			if(start == 1)
+				state = P2_Wait;
+			else if(start == 0)
+				state = P2_Init;
+			break;
+		case P2_Wait:
+			if(start == 0)
+				state = P2_Init;
+			else
+				state = P2_MoveUp;
+			break;
+		case P2_MoveUp:
+			if(start == 0)
+				state = P2_Init;
+			else if (i == 0)
+				state = P2_MoveDown;
+			else
+				state = P2_MoveUp;
+			break;
+		case P2_MoveDown:
+			if(start == 0)
+				state = P2_Init;
+			else if (i == 2)
+				state = P2_MoveUp;
+			else 
+				state = P2_MoveDown;
+			break;
+		default:
+			state = P2_Init;
+			break;
+	}
+
+	switch (state) {
+		case P2_Init:
+			P2_Rows[7] = 0xF1;
+			i = 1;
+			break;
+		case P2_Wait:
+			break;
+		case P2_MoveUp:
+			P2_Rows[7]  = paddle[i];
+			i--;
+			break;
+		case P2_MoveDown:
+			P2_Rows[7] = paddle[i];
+			i++;
+			break;
+	}
+
+
+
+	return state;
+}
+
+enum BallY_States { BY_Init, BY_Wait, shift_down, shift_up };
+
+int Ball_YMovement(int state){
+	static unsigned char previous = 0x00;
+
+	switch(state) {
+		case BY_Init:
+			if(start == 1)
+				state = shift_down;
+			else if(start == 0)
+				state = BY_Init;
+			break;
+		case BY_Wait:
+			if(start == 0)
+				state = BY_Init;
+			else if( Ball_Location[current] == ((previous >> 1) | 0x80))
+				state = shift_up;
+			else if( Ball_Location[current] == ((previous << 1) | 0x01))
+				state = shift_down;
+			else
+				state = BY_Wait;
+			break;
+		case shift_down:
+			if(start == 0)
+				state = BY_Init;
+			else if ( Ball_Location[current] == 0xEF && previous == 0xF7 )
+				state = shift_up;
+			else
+				state = shift_down;	
+			break;
+		case shift_up:
+			if(start == 0)
+				state = BY_Init;
+			else if ( Ball_Location[current] == 0xFE && previous == 0xFD )
+				state = shift_down;
+			else
+				state = shift_up;
+			break;
+		default:
+			state = BY_Init;
+			break;
+	}
+
+	switch(state) {
+		case BY_Init:
+			previous = 0x00;
+			break;
+		case BY_Wait:
+			break;
+		case shift_down:
+			previous = Ball_Location[current];
+			Ball_Location[current] = ( Ball_Location[current] << 1 ) | 0x01;
+			break;
+		case shift_up:
+			previous = Ball_Location[current];
+			Ball_Location[current] = ( Ball_Location[current] >> 1 ) | 0x80;
+			break;
+		default:
+			break;
+	}
+
+	return state;
+}
+
+enum BallX_States { BX_Init, shift_left, shift_right };
+
+int Ball_XMovement(int state) {
+	static unsigned char x = 0x00;
+	
+	switch (state) {
+		case BX_Init:
+			if(start == 1)
+				state = shift_right;
+			else
+				state = BX_Init;
+			break;
+		case shift_right:
+			if(start == 0)
+				state = BX_Init;
+			else if ( current == 6 )
+				state = shift_left;
+			else
+				state = shift_right;
+			break;
+		case shift_left:
+			if(start == 0)
+				state = BX_Init;
+			else if ( current == 1 )
+				state = shift_right;
+			else
+				state = shift_left;
+			break;
+		default:
+			state = BX_Init;
+			break;
+
+	}
+
+	switch (state) {
+		case BX_Init:
+			x = 0x00;
+			current = 3;
+			Ball_Location[0] = Ball_Location[1] = Ball_Location[2] = 0xFF;
+			Ball_Location[4] = Ball_Location[5] = Ball_Location[6] = 0xFF;
+			Ball_Location[7] = 0xFF;
+			Ball_Location[3] = 0xFB;
+			break;
+		case shift_right:
+			x = Ball_Location[current];
+			Ball_Location[current] = Ball_Location[current+1];
+			Ball_Location[current+1] = x;
+			current++;
+			break;
+		case shift_left:
+			x = Ball_Location[current];
+			Ball_Location[current] = Ball_Location[current-1];
+			Ball_Location[current-1] = x;
+			current--;
+		default:
+			break;
+	}
+	return state;
 }
 
 
-void Tick_LCD_Message() {   //Will display "Speed Up!" if distance is too small and "Safe" if distance is larger
-  
-  switch ( LCD_Msg_State ) {
-    case LCD_MsgInit:
-      if(distance_cm >= 100){
-        LCD_Msg_State = LCD_Msg1;
-      }
-      else if(distance_cm < 100){
-        LCD_Msg_State = LCD_Msg2;
-      }
-      break;
-    case LCD_Msg1:
-      if(distance_cm >= 100){
-        LCD_Msg_State = LCD_Msg1;
-      }
-      else if(distance_cm < 100){
-        LCD_Msg_State = LCD_MsgInit;
-      }
-      break;
-    case LCD_Msg2:
-      if(distance_cm >= 100){
-        LCD_Msg_State = LCD_MsgInit;
-      }
-      else if(distance_cm < 100){
-        LCD_Msg_State = LCD_Msg2;
-      }
-      break;
-    default:
-      LCD_Msg_State = LCD_MsgInit;
-      break;
-  }
-  
-  switch ( LCD_Msg_State ) {
-    case LCD_MsgInit:
-      lcd.setCursor(0, 1);
-      lcd.print("                ");    //used to clear display
-      break;
-    case LCD_Msg1:
-      lcd.setCursor(0, 1);
-      lcd.print("SAFE");     
-      break;
-    case LCD_Msg2:
-      lcd.setCursor(0, 1);
-      lcd.print("SPEED UP!       ");
-      if ( distance_cm == 0 ) {
-        lcd.setCursor(0,1);
-        lcd.print("Out of Range    ");
-      }
-      else{
-        lcd.setCursor(0, 1);
-        lcd.print("SPEED UP!       ");        
-      }
-      break;
-    default:
-      break;
-  }
+
+//--------------------------------------
+// LED Matrix Display SM
+//--------------------------------------
+enum Display_States { display };
+
+int DisplaySM(int state) {
+
+	// Local Variables
+	static unsigned char column = 0x80;
+	static unsigned char i = 0;
+	static unsigned char P1_Paddle = 0x00;
+	static unsigned char P2_Paddle = 0x00;
+	static unsigned char Ball = 0x00;
+	// Transitions
+	switch (state) {
+		case display:	
+			break;
+		default:	
+			state = display;
+			break;
+	}	
+	// Actions
+	switch (state) {
+		case display:	
+			if (column == 0x01) {
+				i = 0;
+				P1_Paddle = P1_Rows[i];
+				P2_Paddle = P2_Rows[i];
+				Ball = Ball_Location[i];
+				column = 0x80;
+				i++;		
+			}
+			else {
+				P1_Paddle = P1_Rows[i];
+				P2_Paddle = P2_Rows[i];
+				Ball = Ball_Location[i];
+				column >>= 1;
+				i++;
+			
+			}
+			break;
+		default:
+			break;
+	}
+	PORTC = column	;				// Pattern to display
+	PORTD = P1_Paddle & P2_Paddle & Ball;		// Row(s) displaying pattern	
+	return state;
 }
 
-void Song_SM () {
+int main() {
+	DDRA = 0x00; PORTA = 0xFF; // Initialize PORTA to input
+	DDRC = 0xFF; PORTC = 0x00; // Initialize PORTC to ouput
+	DDRD = 0xFF; PORTD = 0x00; // PC7..4 outputs init 0s, PC3..0 inputs init 1s
 
-  switch (Song_State) {
-    case Play_Song0:
-      if(distance_cm >= 100){
-        Song_State = Play_Song1;
-      }
-      else if(distance_cm < 100){
-        Song_State = Play_Song2;
-      }
-      break;
-    case Play_Song1:
-      if(distance_cm >= 100){
-        Song_State = Play_Song1;
-      }
-      else if(distance_cm < 100){
-        Song_State = Play_Song2;
-      }
-      break;
-    case Play_Song2:
-      if(distance_cm >= 100){
-        Song_State = Play_Song1;
-      }
-      else if(distance_cm < 100){
-        Song_State = Play_Song2;
-      }
-      break;
-    default:
-      Song_State = Play_Song0;
-      break;
-  }
-  
-    switch (Song_State) {
-    case Play_Song0:
-      break;
-    case Play_Song1:
-      buzz(melodyPin, 0, 100);
-      break;
-    case Play_Song2:
-      if (distance_cm == 0){
-        buzz(melodyPin, 0, 100);
-      }
-      else{
-        buzz(melodyPin, 1800, 100);
-      }
-      break;
-    default:
-      break;
-  }
-}
+	//Declare an array of tasks 
+	static task task1, task2, task3, task4, task5, task6;
+	task *tasks[] = { &task1, &task2, &task3, &task4, &task5, &task6 };
+	const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
+	
+	const char start = 0;
+	// Task 1 (Start)
+	task1.state = start;//Task initial state.
+	task1.period = 100;//Task Period.
+	task1.elapsedTime = task1.period;//Task current elapsed time.
+	task1.TickFct = &StartSM;//Function pointer for the tick.
+	// Task 2 (Paddle 1)
+	task2.state = start;//Task initial state.
+	task2.period = 100;//Task Period.
+	task2.elapsedTime = task2.period;//Task current elapsed time.
+	task2.TickFct = &P1_Movement;//Function pointer for the tick.
+	// Task 2 (Paddle 2)
+	task3.state = start;//Task initial state.
+	task3.period = 200;//Task Period.
+	task3.elapsedTime = task3.period;//Task current elapsed time.
+	task3.TickFct = &P2_Movement;//Function pointer for the tick.
+	// Task 4 (Ball Y Axis)
+	task4.state = start;//Task initial state.
+	task4.period = Ball_Speed;//Task Period.
+	task4.elapsedTime = task4.period;//Task current elapsed time.
+	task4.TickFct = &Ball_YMovement;//Function pointer for the tick.
+	//Task 5 (Ball X Axis)
+	task5.state = start;//Task initial state.
+	task5.period = Ball_Speed;//Task Period.
+	task5.elapsedTime = task5.period;//Task current elapsed time.
+	task5.TickFct = &Ball_XMovement;//Function pointer for the tick.
+	// Task 6 (Display)
+	task6.state = start;//Task initial state.
+	task6.period = 1;//Task Period.
+	task6.elapsedTime = task6.period;//Task current elapsed time.
+	task6.TickFct = &DisplaySM;//Function pointer for the tick.
 
-void setup() {
-  lcd.begin(16, 2);
-  pinMode(melodyPin, OUTPUT);
-  Timer1.initialize(timerPeriod);
-  Timer1.attachInterrupt(TimerISR);
-  LCD_Dist_State = LCD_Distance;
-  LCD_Msg_State = LCD_MsgInit;
-  Sonar_State = Sonar_Ping;
-}
+	
+	unsigned short j;
+	unsigned long GCD = tasks[0]->period;
+	for ( j = 1; j < numTasks; j++ ) {
+		GCD = findGCD(GCD,tasks[j]->period);
+	}	
 
-void loop() {
-  
-  if( Sonar_elapsedTime >= timerPeriod ) {
-    Sonar_SM();
-    Sonar_elapsedTime = 0;
-  }
 
-  if (Song_elapsedTime >= (timerPeriod * 2) ) {
-    Song_SM();
-    Song_elapsedTime = 0;
-  }
-  
-  Tick_LCD_Dist ();  
-  Tick_LCD_Message();
+	// Set the timer and turn it on
+	TimerSet(GCD);
+	TimerOn();
 
-  while( !TimerFlag ) {}
-  TimerFlag = 0;
-  Sonar_elapsedTime += timerPeriod;
-  Song_elapsedTime += timerPeriod;
-  
+	unsigned short i; // Scheduler for-loop iterator
+	while(1) {	
+		for ( i = 0; i < numTasks; i++ ) { // Scheduler code
+			if ( tasks[i]->elapsedTime == tasks[i]->period ) { // Task is ready to tick
+				tasks[i]->state = tasks[i]->TickFct(tasks[i]->state); // Set next state 
+				tasks[i]->elapsedTime = 0; // Reset the elapsed time for next tick.
+			}
+			tasks[i]->elapsedTime += GCD;
+		}
+		while(!TimerFlag);
+			TimerFlag = 0;
+	}
+	return 0; // Error: Program should not exit!
 }
 {% endhighlight %}
   
 <h3>notes_Library.h<h3>
 {% highlight c++ %}
-#ifndef NOTES_LIBRARY_H
-#define NOTES_LIBRARY_H
 
-#include <Arduino.h>
-
-#define melodyPin 49
-
-
-void buzz(int targetPin, long frequency, long length) {
-  digitalWrite(13, HIGH);
-  long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
-  //// 1 second's worth of microseconds, divided by the frequency, then split in half since
-  //// there are two phases to each cycle
-  long numCycles = frequency * length / 1000; // calculate the number of cycles for proper timing
-  //// multiply frequency, which is really cycles per second, by the number of seconds to
-  //// get the total number of cycles to produce
-  for (long i = 0; i < numCycles; i++) { // for the calculated length of time...
-    digitalWrite(targetPin, HIGH); // write the buzzer pin high to push out the diaphram
-    delayMicroseconds(delayValue); // wait for the calculated delay value
-    digitalWrite(targetPin, LOW); // write the buzzer pin low to pull back the diaphram
-    delayMicroseconds(delayValue); // wait again or the calculated delay value
-  }
-  digitalWrite(9, LOW);
-
-}
-
-#endif
 {% endhighlight %}
