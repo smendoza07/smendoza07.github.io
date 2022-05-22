@@ -13,7 +13,7 @@ This project uses a 5x8 LED array
 ## Parts Used
 - 5x8 LED Array
 - Buttons (x3)
-- ATMega 1284
+- ATMega1284P
   
 ## Code
 
