@@ -5,6 +5,10 @@ layout: page
 
 <h1>PROJECTS</h1>
 
+[Air Quality Sensor](AirQualitySensor.md)
+
+Wifi connected air quality sensor that displays the temperature, humidity, air quality index, and particulate matter concentration on a Blynk app.
+
 [Ping Pong Game](PingPong.md)
 
 Uses a LCD array to play a primitive version of Ping Pong. 
