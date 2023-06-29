@@ -5,15 +5,14 @@ layout: page
 
 <h1>PROJECTS</h1>
 
+[Ping Pong Game](PingPong.md)
+
+<p>Uses a LCD array to play a primitive version of Ping Pong. <p>
 
 [Proximity Alert Sensor](ProximityAlert.md)
 
 <p>Uses a 16x2 LCD screen to display distance of object and message along with a speaker that
 will beep when distance is too small.<p>
-  
-[Ping Pong Game](/smendoza07.github.io/PingPong.md)
-
-<p>Uses a LCD array to play a primitive version of Ping Pong. <p>
   
 <h3>Digital Door Lock System</h3>
 
