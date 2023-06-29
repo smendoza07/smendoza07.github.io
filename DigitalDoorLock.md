@@ -8,7 +8,7 @@ categories: media
 Using a digital keypad, unlock a "door" by inputting the correct sequence of numbers. When the correct sequence "12345" is inputted the door will unlock and an LED will light up to show the door is unlocked. If the wrong key is entered, the door will remain locked and the LED will remain off. The door will re-lock upon "closing" the door, which is simulated by pressing a button.
   
 ## Demo Video
-{% include embed.html url="https://www.youtube.com/watch?v=kftMkPg5F00" %}
+{% include embed.html url="https://youtube.com/embed/kftMkPg5F00" %}
 
 ## Parts Used
 
