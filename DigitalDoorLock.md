@@ -19,7 +19,7 @@ Using a digital keypad, unlock a "door" by inputting the correct sequence of num
 
 ## Code
 
-<h3>SonicSensorSM.ino<h3>
+<h3>DigitalDoorLock.c<h3>
 {% highlight c++ %}
 #include <avr/io.h>
 #include "timer.h"
