@@ -7,16 +7,16 @@ layout: page
 
 [Ping Pong Game](PingPong.md)
 
-<!-- <p>Uses a LCD array to play a primitive version of Ping Pong. <p> -->
+Uses a LCD array to play a primitive version of Ping Pong. 
 
 [Proximity Alert Sensor](ProximityAlert.md)
 
-<!-- <p>Uses a 16x2 LCD screen to display distance of object and message along with a speaker that
-will beep when distance is too small.<p> -->
+Uses a 16x2 LCD screen to display distance of object and message along with a speaker that
+will beep when distance is too small.
   
-<h3>Digital Door Lock System</h3>
+[Digital Door Lock System](DigitalDoorLock.md)
 
-<!-- <p>Using a digital keypad, unlock a door by inputting the correct sequence of numbers and light
+Using a digital keypad, unlock a door by inputting the correct sequence of numbers and light
 up an LED to show the door is unlocked. Resets if a wrong key is entered and re-locks upon “closing” door. 
-<p> -->
+
   
