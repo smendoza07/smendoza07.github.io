@@ -26,7 +26,6 @@ Using a NodeMCU ESP8266 Microcontroller, a DHT22 Temperature and Humidity Sensor
 
 #define BLYNK_TEMPLATE_ID "TMPLH8GQcxqU"
 #define BLYNK_DEVICE_NAME "Air Quality Sensor"
-//#define BLYNK_AUTH_TOKEN "FOqG-iLxb-g4lD7wvfbK2_xMRxjByq2C"
 
 #include <SPI.h>
 #include <ESP8266WiFi.h>
@@ -36,28 +35,19 @@ Using a NodeMCU ESP8266 Microcontroller, a DHT22 Temperature and Humidity Sensor
 #define LENG 31   //0x42 + 31 bytes equal to 32 bytes
 unsigned char buf[LENG];
 // You should get Auth Token in the Blynk App.
-// Go to the Project Settings (nut icon).
-char auth[] = "FOqG-iLxb-g4lD7wvfbK2_xMRxjByq2C";
+char auth[] = "";
 
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "Arduino_Hotspot"; //Enter your WIFI Name
-char pass[] = "Arduino122A"; //Enter your WIFI Password
-//char ssid[] = "SJH-2.4";  
-//char pass[] = "5625068858";  
-//char ssid[] = "RSFish2.4";  
-//char pass[] = "3108046815";  
+char ssid[] = ""; //Enter your WIFI Name
+char pass[] = ""; //Enter your WIFI Password
+
 
 
 #define DHTPIN 4          // D4 pin
 
-
-// Uncomment whatever type you're using!
-
-//#define DHTTYPE DHT11     // DHT 11
 #define DHTTYPE DHT22   // DHT 22, AM2302, AM2321
-//#define DHTTYPE DHT21   // DHT 21, AM2301
 
 int mq135 = A0; // smoke sensor is connected with the analog pin A0 
 int data = 0;
